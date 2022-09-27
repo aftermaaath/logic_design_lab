@@ -7,15 +7,15 @@ output [4-1:0] a, b;
 wire nsel;
 
 not(nsel, sel);
-and(a[0], nsel, in[0]);
-and(a[1], nsel, in[1]);
-and(a[2], nsel, in[2]);
-and(a[3], nsel, in[3]);
+and a1(a[0], nsel, in[0]);
+and a2(a[1], nsel, in[1]);
+and a3(a[2], nsel, in[2]);
+and a4(a[3], nsel, in[3]);
 
-and(b[0], sel, in[0]);
-and(b[1], sel, in[1]);
-and(b[2], sel, in[2]);
-and(b[3], sel, in[3]);
+and a5(b[0], sel, in[0]);
+and a6(b[1], sel, in[1]);
+and a7(b[2], sel, in[2]);
+and a8(b[3], sel, in[3]);
     
 endmodule
 
