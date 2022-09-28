@@ -5,24 +5,24 @@ input [4-1:0] in1, in2, in3, in4;
 input [5-1:0] control;
 output [4-1:0] out1, out2, out3, out4;
 
-wire [3:0]c0_1, c0_2, c3_1, c3_2, tmp_c2_1, tmp_c2_2; 
+wire [3:0]c0_1, c0_2, c3_1, c3_2, tmp_1, tmp_2; 
 
 Crossbar_2x2_4bit c1(in1, in2, control[0], c0_1, c0_2);
 Crossbar_2x2_4bit c2(in3, in4, control[3], c3_1, c3_2);
-Crossbar_2x2_4bit c3(c0_2, c3_1, control[2], tmp_c2_1, tmp_c2_2);
-Crossbar_2x2_4bit c4(c0_1, tmp_c2_1, control[1], out1, out2);
-Crossbar_2x2_4bit c5(tmp_c2_2, c3_2, control[4], out3, out4);
+Crossbar_2x2_4bit c3(c0_2, c3_1, control[2], tmp_1, tmp_2);
+Crossbar_2x2_4bit c4(c0_1, tmp_1, control[1], out1, out2);
+Crossbar_2x2_4bit c5(tmp_2, c3_2, control[4], out3, out4);
 
 endmodule
 
 module selc(sel, out, a);
-    input sel;
-    input [3:0] a;
-    output [3:0] out;
-    and(out[0], a[0], sel);
-    and(out[1], a[1], sel);
-    and(out[2], a[2], sel);
-    and(out[3], a[3], sel);
+input sel;
+input [3:0] a;
+output [3:0] out;
+and(out[0], a[0], sel);
+and(out[1], a[1], sel);
+and(out[2], a[2], sel);
+and(out[3], a[3], sel);
 endmodule
 
 module Dmux_1x2_4bit(in, a, b, sel);
