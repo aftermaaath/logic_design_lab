@@ -18,7 +18,7 @@ Crossbar_4x4_4bit c1(
 );
 
 initial begin
-    repeat (2 ** 3) begin
+    repeat (2 ** 5) begin
         #1 control = control + 5'b1;
         in1 = in1 + 4'b1;
         in2 = in2 + 4'b1;
