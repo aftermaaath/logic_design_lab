@@ -1,4 +1,4 @@
-`timescale 1ns/1ns
+`timescale 1ns/1ps
 
 module Exhausted_Testing(a, b, cin, error, done);
 output [4-1:0] a, b;

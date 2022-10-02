@@ -1,4 +1,4 @@
-`timescale 1ns/1ns
+`timescale 1ns/1ps
 
 module Ripple_Carry_Adder(a, b, cin, cout, sum);
 input [3:0] a, b;

@@ -60,6 +60,7 @@ or_gate or5(cout[1], tmp2, g[1]);
 and_gate and11(tmp3, cout[1], p[2]);
 or_gate or6(cout[2], tmp3, g[2]);
 
+
 endmodule
 
 module generator_2bit(p03, g03, p47, g47, c0, c4, c8);

@@ -17,7 +17,7 @@ Carry_Look_Ahead_Adder_8bit CLA(
 
 // uncommment and add "+access+r" to your nverilog command to dump fsdb waveform on NTHUCAD
 // initial begin
-//      $fsdbDumpfile("Adders.fsdb");
+//      $fsdbDumpfile("Carry_Look_Ahead_Adder_8bit.fsdb");
 //      $fsdbDumpvars;
 // end
 
