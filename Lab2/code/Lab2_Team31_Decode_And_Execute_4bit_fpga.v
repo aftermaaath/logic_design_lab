@@ -298,13 +298,67 @@ mux_8x1_1bit m4(rd[3], x1[3], x2[3], x3[3], x4[3], x5[3], x6[3], x7[3], x8[3], s
 
 endmodule
 
-module output_to_signal(rs, rt, sel, seg);
+module output_to_signal(rs, rt, sel, seg, en);
 input [4-1:0] rs, rt;
 input [3-1:0] sel;
 output [7-1:0] seg;
-wire [3:0] rd;
+output [3:0] en;
+wire [3:0] rd, nrd;
+wire [6:0] nseg;
+wire x_w, yz, _xz, _x_y_w, _xyw, x_y_z;
+wire _y_z, _x_y, _x_z_w, _y_w, x_zw, _xzw;
+wire _xw, x_y, _xy, _zw;
+wire x_z, _yzw, yz_w, y_zw;
+wire xy, xz, z_w;
+wire y_w, _xy_z;
+wire _yz, _xy_w; 
 
 Decode_And_Execute de(rs, rt, sel, rd);
+not n1 [3:0] (nrd, rd);
+not n2 [3:0] (en, 4'b0001);
 
+// xyzw: 3210
+// A
+and a1(x_w, rd[3], nrd[0]);
+and a2(yz, rd[2], rd[1]);
+and a3(_xz, nrd[3], rd[1]);
+and a4(_x_y_w, nrd[3], nrd[2], nrd[0]);
+and a5(_xyw, nrd[3], rd[2], rd[0]);
+and a6(x_y_z, rd[3], nrd[2], nrd[1]);
+// B
+and a7(_y_z, nrd[2], nrd[1]);
+and a8(_x_y, nrd[3], nrd[2]);
+and a9(_x_z_w, nrd[3], nrd[1], nrd[0]);
+and a10(_y_w, nrd[2], nrd[0]);
+and a11(x_zw, rd[3], nrd[1], rd[0]);
+and a12(_xzw, nrd[3], rd[1], rd[0]);
+// C
+and a13(_xw, nrd[3], rd[0]);
+and a14(x_y, rd[3], nrd[2]);
+and a15(_xy, nrd[3], rd[2]);
+and a16(_zw, nrd[1], rd[0]);
+// D
+and a17(x_z, rd[3], nrd[1]);
+and a18(_yzw, nrd[2], rd[1], rd[0]);
+and a19(yz_w, rd[2], rd[1], nrd[0]);
+and a20(y_zw, rd[2], nrd[1], rd[0]);
+// E
+and a21(xy, rd[3], rd[2]);
+and a22(xz, rd[3], rd[1]);
+and a23(z_w, rd[1], nrd[0]);
+// FG
+and a24(y_w, rd[2], nrd[0]);
+and a25(_xy_z, nrd[3], rd[2], nrd[1]);
+and a26(_yz, nrd[2], rd[1]);
+and a27(_xy_w, nrd[3], rd[2], nrd[0]);
+
+or o1(nseg[0], x_w, yz, _xz, _x_y_w, _xyw, x_y_z);
+or o2(nseg[1], _y_z, _x_y, _x_z_w, _y_w, x_zw, _xzw);
+or o3(nseg[2], _y_z, _xw, x_y, _xy, _zw);
+or o4(nseg[3], x_z, _x_y_w, _yzw, yz_w, y_zw);
+or o5(nseg[4], x_w, xy, xz, z_w, _y_w);
+or o6(nseg[5], x_y, xz, y_w, _xy_z, _x_z_w);
+or o7(nseg[6], x_y, xz, _yz, _xy_w, y_zw);
+not n3 [6:0] (seg, nseg);
 
 endmodule
