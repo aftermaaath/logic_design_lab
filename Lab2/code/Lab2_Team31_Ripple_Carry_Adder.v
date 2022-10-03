@@ -73,26 +73,14 @@ OR_Gate o2(out, w4, w3);
 
 endmodule
 
-module Majority2(a, b, c, out);
-input a, b, c;
-output out;
-wire w1, w2, w3, w4, nc;
-
-NOT_Gate n1(nc, c);
-XOR_Gate x1(w1, a, b);
-XNOR_Gate x2(w2, a, b);
-AND_Gate a1(w3, nc, w1);
-AND_Gate a2(w4, c, w2);
-OR_Gate a3(out, w4, w3);
-
-endmodule
-
 module Full_Adder (a, b, cin, cout, sum);
 input a, b, cin;
 output cout, sum;
+wire tmp;
 
 Majority m1(a, b, cin, cout);
-Majority2 m2(a, b, cin, sum);
+XOR_Gate x1(tmp, a, b);
+XOR_Gate x2(sum, tmp, cin);
 
 endmodule
 
