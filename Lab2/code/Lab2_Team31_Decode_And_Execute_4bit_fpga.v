@@ -88,7 +88,6 @@ endmodule
 module Full_Adder (a, b, cin, cout, sum);
 input a, b, cin;
 output cout, sum;
-wire tr3, tr1, tmp, tr0;
 
 Majority m1(a, b, cin, cout);
 Majority2 m2(a, b, cin, sum);
