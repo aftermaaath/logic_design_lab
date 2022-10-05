@@ -35,11 +35,12 @@ initial begin
             repeat(2**4) begin
                 #1;
                 error = 1'b0;
+                // if({cout, sum[3:0]}!=={(cin&(a[3:0]^b[3:0]))|(a[3:0]&b[3:0]), a[3:0]^b[3:0]^cin}) begin
                 if({cout, sum[3:0]}!==a[3:0]+b[3:0]+cin) begin
                     error = 1'b1;
                 end
-                else begin
-                end
+//                else begin
+//                end
                 #4;
                 a = a+4'b0001;
             end
