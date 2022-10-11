@@ -46,7 +46,7 @@ module NOR(out, a, b);
     output out;
     wire nout;
     OR o1(nout, a, b);
-    NOT n1(out. nout);
+    NOT n1(out, nout);
 endmodule
 
 module XNOR(out, a, b);
