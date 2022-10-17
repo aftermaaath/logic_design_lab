@@ -19,39 +19,39 @@ assign hold = ((max<min)||(out>max)||(out<min)||((max == min) && (min == out))) 
 
 always@(posedge clk)begin
     if(enable == 1'b1)begin
-        direction <= next_direction;
-        out <= next_out;
+        if(!rst_n)begin
+            direction <= 1'b1;
+            out <= min;
+        end
+        else begin
+            direction <= next_direction;
+            out <= next_out;
+        end        
     end
     else begin
     end
 end
 
 always@(*)begin
-    if(!rst_n)begin
-        next_out = min;
-        next_direction = 1'b1;
-    end
-    else begin
-        if(!hold)begin
-            if(flip) begin
-                next_direction = ~direction;
-                next_out = (direction == 1'b1) ? out - 1'b1 : out + 1'b1;
-            end
-            else begin
-                if((out < max && direction == 1'b1)||(out == min && direction == 1'b0))begin
-                    next_direction = 1'b1;
-                    next_out = out + 1'b1;
-                end
-                else begin
-                    next_direction = 1'b0;
-                    next_out = out - 1'b1;
-                end
-            end
+    if(!hold)begin
+        if(flip) begin
+            next_direction = ~direction;
+            next_out = (direction == 1'b1) ? out - 1'b1 : out + 1'b1;
         end
         else begin
-            next_direction = direction;
-            next_out = out;
+            if((out < max && direction == 1'b1)||(out == min && direction == 1'b0))begin
+                next_direction = 1'b1;
+                next_out = out + 1'b1;
+            end
+            else begin
+                next_direction = 1'b0;
+                next_out = out - 1'b1;
+            end
         end
+    end
+    else begin
+        next_direction = direction;
+        next_out = out;
     end
 end
 endmodule

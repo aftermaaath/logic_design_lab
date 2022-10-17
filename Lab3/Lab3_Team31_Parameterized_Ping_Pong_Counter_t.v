@@ -34,24 +34,31 @@ initial begin
     end
     #10 min = 4'd3;
     max = 4'd10;
-    #40 rst_n = 1'b0;
+    #20 rst_n = 1'b0;
     #10 rst_n = 1'b1;
     repeat(3)begin
         #15 flip = 1'b1;
-        #10 flip = 1'b0;
+        #9 flip = 1'b0;
     end
-    #65
+    #66
     min = 4'd9;
     max = 4'd9; 
     #20
     min = 4'd0;
     max = 15;
+    #43 enable = 1'b0;
+    #10 enable = 1'b1;
     repeat(2)begin
         #20 flip = 1'b1;
         #10 flip = 1'b0;
     end
     #50
     #10 min = 4'd3;
+    #3 
+    rst_n = 1'b0;
+    enable = 1'b0;
+    #5 enable = 1'b1;
+    #10 rst_n = 1'b1;
     #10 max = 4'd7;
     #20 flip = 1'b1;
     #10 flip = 1'b0;
@@ -65,7 +72,15 @@ initial begin
     #10
     flip = 1'b1;
     #10 flip = 1'b0;
-    #175
+    #165
+    min = 4'd8;
+    #10
+    max = 4'd13;
+    #5
+    rst_n = 1'b0;
+    #10
+    rst_n = 1'b1;
+    #90
     $finish;
 end
 

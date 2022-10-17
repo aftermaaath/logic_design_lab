@@ -32,11 +32,14 @@ initial begin
     repeat(2**2)begin
         #15 rst_n = ~rst_n;
     end
-//    #165
-//    rst_n = 1'b0;
     #5
     rst_n = 1'b1;
-    #355
+    #285
+    enable = 1'b0;
+//    rst_n = 1'b0;
+    #25
+    enable = 1'b1;
+    #5
     rst_n = 1'b0;
     #25
     rst_n = 1'b1;
