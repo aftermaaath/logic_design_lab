@@ -18,18 +18,18 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     wire [3:0]out;
     wire rst_n, rst_n_one_pulse, flip_one_pulse, flip, rst;
     wire hold;
-    wire devided_clk, digit_clk;
+    wire divided_clk, digit_clk;
 
-    Clock_Divider cd(clk, devided_clk, digit_clk);
+    Clock_Divider cd(clk, divided_clk, digit_clk);
 
     //debounce and generate one pulse clk
     debounce db1(rst_n, rst_n_pb, clk);
     debounce db2(flip, flip_pb, clk);
-    onepulse op1(rst_n, devided_clk, rst_n_one_pulse);
-    onepulse op2(flip, devided_clk, flip_one_pulse);
+    onepulse op1(rst_n, divided_clk, rst_n_one_pulse);
+    onepulse op2(flip, divided_clk, flip_one_pulse);
 
     assign rst = ~rst_n_one_pulse;
-    assign enable_clk = enable & devided_clk;
+    assign enable_clk = enable & divided_clk;
 
     Parameterized_Ping_Pong_Counter pppc(clk, rst, enable_clk, flip_one_pulse, max, min, direction, out);
 
@@ -180,21 +180,21 @@ module onepulse(pb_debounced, clk, pb_one_pulse);
     end
 endmodule
 
-module Clock_Divider(clk, devided_clk, digit_clk);
+module Clock_Divider(clk, divided_clk, digit_clk);
 
     input clk;
-    output devided_clk, digit_clk;
-    reg [24:0]cnt = 25'b0;
+    output divided_clk, digit_clk;
+    reg [23:0]cnt = 24'b0;
     reg [19:0]cnt_1 = 20'b0;
-    reg devided_clk, digit_clk;
+    reg divided_clk, digit_clk;
 
     always@(posedge clk)begin
-        if(cnt == 2**25 - 1'b1)begin
-            cnt <= 25'b0;
-            devided_clk <= 1'b1;
+        if(cnt == 2**24 - 1'b1)begin
+            cnt <= 24'b0;
+            divided_clk <= 1'b1;
         end
         else begin
-            devided_clk <= 1'b0;
+            divided_clk <= 1'b0;
             cnt <= cnt+1'b1;
         end
         
