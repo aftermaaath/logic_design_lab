@@ -25,8 +25,8 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     //debounce and generate one pulse clk
     debounce db1(rst_n, rst_n_pb, clk);
     debounce db2(flip, flip_pb, clk);
-    onepulse op1(rst_n, clk, rst_n_one_pulse);
-    onepulse op2(flip, clk, flip_one_pulse);
+    onepulse op1(rst_n, devided_clk, rst_n_one_pulse);
+    onepulse op2(flip, devided_clk, flip_one_pulse);
 
     assign rst = ~rst_n_one_pulse;
     assign enable_clk = enable & devided_clk;
