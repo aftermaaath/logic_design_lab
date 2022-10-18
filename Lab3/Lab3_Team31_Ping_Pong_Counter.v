@@ -11,28 +11,30 @@ reg [3:0]next_out;
 reg direction, next_direction;
 
 always@(posedge clk)begin
-    if(enable == 1'b1) begin
-        if(!rst_n)begin
-            out <= 4'b0;
-            direction <= 1'b1;
-        end
-        else begin
-            out <= next_out;
-            direction <= next_direction;
-        end
-    end
-    else begin
-    end
+    out <= next_out;
+    direction <= next_direction;     
 end
 
 always@(*) begin
-    if((direction == 1 && out<4'b1111) || (direction == 0 && out == 4'b0)) begin
-        next_out = out+1'b1;
+    if(!rst_n)begin
+        next_out = 4'b0;
         next_direction = 1'b1;
     end
     else begin
-        next_out = out-1'b1;
-        next_direction = 1'b0;
+        if(!enable)begin
+            next_out = out;
+            next_direction = direction;
+        end
+        else begin
+            if((direction == 1 && out<4'b1111) || (direction == 0 && out == 4'b0)) begin
+                next_out = out+1'b1;
+                next_direction = 1'b1;
+            end
+            else begin
+                next_out = out-1'b1;
+                next_direction = 1'b0;
+            end
+        end
     end
 end
 

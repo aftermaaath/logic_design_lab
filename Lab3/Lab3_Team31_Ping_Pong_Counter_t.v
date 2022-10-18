@@ -43,6 +43,12 @@ initial begin
     rst_n = 1'b0;
     #25
     rst_n = 1'b1;
+    #25
+    rst_n = 1'b0;
+    enable = 1'b0;
+    #35
+    rst_n = 1'b1;
+    enable = 1'b1;
     #700
     $finish;
 end
