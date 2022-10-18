@@ -36,7 +36,6 @@ initial begin
     rst_n = 1'b1;
     #285
     enable = 1'b0;
-//    rst_n = 1'b0;
     #25
     enable = 1'b1;
     #5

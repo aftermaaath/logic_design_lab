@@ -20,6 +20,12 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     wire hold;
     wire divided_clk, digit_clk;
 
+    reg [3:0] cnt = 4'b0;
+    wire [3:0] next_cnt;
+    reg [7:0] next_seg;
+    // wire [3:0] next_an;
+    assign next_cnt = cnt + 1'b1;
+
     Clock_Divider cd(clk, divided_clk, digit_clk);
 
     //debounce and generate one pulse clk
@@ -33,31 +39,44 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
 
     Parameterized_Ping_Pong_Counter pppc(clk, rst, enable_clk, flip_one_pulse, max, min, direction, out);
 
-    always@(posedge clk)begin
-        if(digit_clk)begin
-            case(an)
-            4'b0111: begin
-                display_segment <= next_segment_out_right;
+    always@(posedge digit_clk)begin
+            display_segment <= next_seg;
+            case(cnt)
+            4'b0000: begin
                 an <= 4'b1011;
+                cnt <= next_cnt;
             end
-            4'b1011: begin
-                display_segment <= next_direction_display;
+            4'b0001: begin
                 an <= 4'b1101;
+                cnt <= next_cnt;
             end
-            4'b1101: begin
-                display_segment <= next_direction_display;
+            4'b0010: begin
                 an <= 4'b1110;
+                cnt <= next_cnt;
             end
             default: begin
-                display_segment <= next_segment_out_left;
                 an <= 4'b0111;
+                cnt <= 4'b0;
             end
             endcase
-        end
-        else begin
-        end
     end
 
+    always@(*)begin
+        case(cnt)
+            4'b0000: begin
+                next_seg = next_segment_out_right;
+            end
+            4'b0001: begin
+                next_seg = next_direction_display;
+            end
+            4'b0010: begin
+                next_seg = next_direction_display;
+            end
+            default: begin
+                next_seg = next_segment_out_left;
+            end
+        endcase
+    end
     always@(*)begin
         if(out < 4'b1010)begin
             next_segment_out_left = 7'b0000001;
@@ -183,7 +202,6 @@ module onepulse(pb_debounced, clk, pb_one_pulse);
 endmodule
 
 module Clock_Divider(clk, divided_clk, digit_clk);
-
     input clk;
     output divided_clk, digit_clk;
     reg [23:0]cnt = 24'b0;
