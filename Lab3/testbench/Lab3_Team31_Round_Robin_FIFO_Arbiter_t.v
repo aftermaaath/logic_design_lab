@@ -61,11 +61,12 @@ initial begin
     @(negedge clk)
     a = a + 2'b10;
     @(negedge clk)
-    a = a + 2'b10;
+    wen = 4'b0;
+//    a = a + 2'b10;
     @(negedge clk)
-    a = a + 2'b10;
+//    a = a + 2'b10;
     @(negedge clk)
-    a = a + 2'b10;
+//    a = a + 2'b10;
     @(negedge clk)
     $finish;
 end 
