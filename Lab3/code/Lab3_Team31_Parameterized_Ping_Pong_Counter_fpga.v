@@ -6,7 +6,7 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     output [6:0] display_segment;
     output [3:0] an;
 
-    reg [3:0]an = 4'b1111;
+    reg [3:0]an;
 
     reg [6:0] display_segment;
 
@@ -20,6 +20,11 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     wire hold;
     wire divided_clk, digit_clk;
 
+    reg [3:0] cnt = 4'b0;
+    wire [3:0] next_cnt;
+    reg [7:0] next_seg;
+    assign next_cnt = cnt + 1'b1;
+
     Clock_Divider cd(clk, divided_clk, digit_clk);
 
     //debounce and generate one pulse clk
@@ -29,28 +34,31 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     onepulse op2(flip, divided_clk, flip_one_pulse);
 
     assign rst = ~rst_n_one_pulse;
-    assign enable_clk = enable & divided_clk;
+    assign enable_clk = divided_clk & enable;
+    wire clk_in;
+    // assign clk_in = clk & divided_clk;
 
     Parameterized_Ping_Pong_Counter pppc(clk, rst, enable_clk, flip_one_pulse, max, min, direction, out);
 
     always@(posedge clk)begin
         if(digit_clk)begin
-            case(an)
-            4'b0111: begin
-                display_segment <= next_segment_out_right;
+            display_segment <= next_seg;
+            case(cnt)
+            4'b0000: begin
                 an <= 4'b1011;
+                cnt <= next_cnt;
             end
-            4'b1011: begin
-                display_segment <= next_direction_display;
+            4'b0001: begin
                 an <= 4'b1101;
+                cnt <= next_cnt;
             end
-            4'b1101: begin
-                display_segment <= next_direction_display;
+            4'b0010: begin
                 an <= 4'b1110;
+                cnt <= next_cnt;
             end
             default: begin
-                display_segment <= next_segment_out_left;
                 an <= 4'b0111;
+                cnt <= 4'b0;
             end
             endcase
         end
@@ -58,6 +66,22 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
         end
     end
 
+    always@(*)begin
+        case(cnt)
+            4'b0000: begin
+                next_seg = next_segment_out_right;
+            end
+            4'b0001: begin
+                next_seg = next_direction_display;
+            end
+            4'b0010: begin
+                next_seg = next_direction_display;
+            end
+            default: begin
+                next_seg = next_segment_out_left;
+            end
+        endcase
+    end
     always@(*)begin
         if(out < 4'b1010)begin
             next_segment_out_left = 7'b0000001;
@@ -114,7 +138,6 @@ module Parameterized_Ping_Pong_Counter (clk,  rst_n, enable, flip, max, min, dir
     assign hold = ((max<min)||(out>max)||(out<min)||((max == min) && (min == out))) ? 1'b1 : 1'b0;
 
     always@(posedge clk)begin
-    if(enable == 1'b1)begin
         if(!rst_n)begin
             direction <= 1'b1;
             out <= min;
@@ -122,32 +145,35 @@ module Parameterized_Ping_Pong_Counter (clk,  rst_n, enable, flip, max, min, dir
         else begin
             direction <= next_direction;
             out <= next_out;
-        end        
+        end
     end
-    else begin
-    end
-end
 
     always@(*)begin
-        if(!hold)begin
-            if(flip) begin
-                next_direction = (direction == 1'b1) ? 1'b0 : 1'b1;
-                next_out = (direction == 1'b1) ? out - 1'b1 : out + 1'b1;
-            end
-            else begin
-                if((out < max && direction == 1'b1)||(out == min && direction == 1'b0))begin
-                    next_direction = 1'b1;
-                    next_out = out + 1'b1;
-                end
-                else begin
-                    next_direction = 1'b0;
-                    next_out = out - 1'b1;
-                end
-            end
+        if(!enable)begin
+            next_out = out;
+            next_direction = direction;
         end
         else begin
-            next_direction = direction;
-            next_out = out;
+            if(!hold)begin
+                if(flip) begin
+                    next_direction = (direction == 1'b1) ? 1'b0 : 1'b1;
+                    next_out = (direction == 1'b1) ? out - 1'b1 : out + 1'b1;
+                end
+                else begin
+                    if((out < max && direction == 1'b1)||(out == min && direction == 1'b0))begin
+                        next_direction = 1'b1;
+                        next_out = out + 1'b1;
+                    end
+                    else begin
+                        next_direction = 1'b0;
+                        next_out = out - 1'b1;
+                    end
+                end
+            end
+            else begin
+                next_direction = direction;
+                next_out = out;
+            end
         end
     end
 endmodule
@@ -172,16 +198,68 @@ module onepulse(pb_debounced, clk, pb_one_pulse);
     input clk;
     output pb_one_pulse;
     reg pb_debounced_delay;
-    reg pb_one_pulse;
+    reg pb_one_pulse_reg;
+    wire pb_one_pulse = pb_one_pulse_reg;
 
     always@(posedge clk)begin    
         pb_debounced_delay <= pb_debounced;
-        pb_one_pulse <= pb_debounced & (!pb_debounced_delay);
+        pb_one_pulse_reg <= pb_debounced & (!pb_debounced_delay);
     end
 endmodule
 
-module Clock_Divider(clk, divided_clk, digit_clk);
+//module Clock_Divider(rst_n, clk, divided_clk, digit_clk);
+//    input clk, rst_n;
+//    output divided_clk, digit_clk;
+//    reg tmp, tmp_1;
+//    reg [23:0]cnt;
+//    reg [15:0]cnt_1;
+//    reg divided_clk, digit_clk;
 
+//    always@(posedge clk)begin
+//        if(rst_n) begin
+//            cnt <= 24'b1;
+//            cnt_1 <= 16'b0;
+//        end
+//        else begin
+//            cnt <= cnt+1'b1;
+//            cnt_1 <= cnt_1+1'b1;
+//        end
+//    end
+//    always@(posedge clk)begin
+//        if(rst_n)begin
+//            divided_clk <= 1'b0;
+//            digit_clk <= 1'b0;
+//        end
+//        else begin
+//            if(cnt == 2**24)begin
+//                divided_clk <= 1'b1;
+//            end
+//            else divided_clk <= 1'b0;
+//            if(cnt_1 == 2**15)begin
+//                digit_clk <= 1'b1;
+//            end
+//            else digit_clk <= 1'b0;
+//        end
+//        // if(cnt == 2**24 - 1'b1)begin
+//        //     cnt <= 24'b0;
+//        //     next_digit_clk <= 1'b1;
+//        // end
+//        // else begin
+//        //     next_divided_clk = 1'b0;
+//        //     cnt <= cnt+1;
+//        // end
+
+//        // if(cnt_1 == 2**15 - 1'b1)begin
+//        //     cnt_1 <= 16'b0;
+//        //     next_digit_clk <= 1'b1;
+//        // end
+//        // else begin
+//        //     next_digit_clk <= 1'b0;
+//        //     cnt_1 <= cnt_1+1'b1;
+//        // end
+//    end
+//endmodule
+module Clock_Divider(clk, divided_clk, digit_clk);
     input clk;
     output divided_clk, digit_clk;
     reg [23:0]cnt = 24'b0;

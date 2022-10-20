@@ -34,8 +34,12 @@ initial begin
     end
     #10 min = 4'd3;
     max = 4'd10;
-    #20 rst_n = 1'b0;
-    #10 rst_n = 1'b1;
+    #20 
+    rst_n = 1'b0;
+    enable = 1'b0;
+    #10 
+    rst_n = 1'b1;
+    enable = 1'b1;
     repeat(3)begin
         #15 flip = 1'b1;
         #9 flip = 1'b0;
