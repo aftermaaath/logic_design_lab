@@ -55,7 +55,5 @@ always@(*)begin
             end
         end
     end
-
-    
 end
 endmodule

@@ -25,7 +25,6 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     reg [7:0] next_seg;
     // wire [3:0] next_an;
     assign next_cnt = cnt + 1'b1;
-
     Clock_Divider cd(clk, divided_clk, digit_clk);
 
     //debounce and generate one pulse clk
