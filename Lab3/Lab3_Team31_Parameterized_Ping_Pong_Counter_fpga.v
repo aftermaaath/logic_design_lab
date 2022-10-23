@@ -20,49 +20,66 @@ module Parameterized_Ping_Pong_Counter_FPGA (clk, rst_n_pb, enable, flip_pb, max
     wire hold;
     wire divided_clk, digit_clk;
 
-    reg [3:0] cnt = 4'b0;
+    reg [3:0] cnt;
     wire [3:0] next_cnt;
     reg [7:0] next_seg;
+    reg flip_delay;
+
     assign next_cnt = cnt + 1'b1;
 
-    Clock_Divider cd(clk, divided_clk, digit_clk);
+    Clock_Divider cd(rst, clk, divided_clk, digit_clk);
 
     //debounce and generate one pulse clk
     debounce db1(rst_n, rst_n_pb, clk);
     debounce db2(flip, flip_pb, clk);
-    onepulse op1(rst_n, divided_clk, rst_n_one_pulse);
-    onepulse op2(flip, divided_clk, flip_one_pulse);
+    onepulse op1(rst_n, clk, rst_n_one_pulse);
+    onepulse op2(flip, clk, flip_one_pulse);
 
     assign rst = ~rst_n_one_pulse;
     assign enable_clk = divided_clk & enable;
-    wire clk_in;
-    // assign clk_in = clk & divided_clk;
-
-    Parameterized_Ping_Pong_Counter pppc(clk, rst, enable_clk, flip_one_pulse, max, min, direction, out);
 
     always@(posedge clk)begin
-        if(digit_clk)begin
-            display_segment <= next_seg;
-            case(cnt)
-            4'b0000: begin
-                an <= 4'b1011;
-                cnt <= next_cnt;
-            end
-            4'b0001: begin
-                an <= 4'b1101;
-                cnt <= next_cnt;
-            end
-            4'b0010: begin
-                an <= 4'b1110;
-                cnt <= next_cnt;
-            end
-            default: begin
-                an <= 4'b0111;
-                cnt <= 4'b0;
-            end
-            endcase
+        if(flip_one_pulse == 1'b1)begin
+            flip_delay <= 1'b1;
+        end
+        else if(divided_clk == 1'b1)begin
+            flip_delay <= 1'b0;
         end
         else begin
+            flip_delay <= flip_delay;
+        end
+    end
+
+    Parameterized_Ping_Pong_Counter pppc(clk, rst, enable_clk, flip_delay, max, min, direction, out);
+
+    always@(posedge clk)begin
+        if(!rst) begin
+            cnt <= 4'b0;
+        end
+        else begin
+            if(digit_clk)begin
+                display_segment <= next_seg;
+                case(cnt)
+                4'b0000: begin
+                    an <= 4'b1011;
+                    cnt <= next_cnt;
+                end
+                4'b0001: begin
+                    an <= 4'b1101;
+                    cnt <= next_cnt;
+                end
+                4'b0010: begin
+                    an <= 4'b1110;
+                    cnt <= next_cnt;
+                end
+                default: begin
+                    an <= 4'b0111;
+                    cnt <= 4'b0;
+                end
+                endcase
+            end
+            else begin
+            end
         end
     end
 
@@ -207,82 +224,36 @@ module onepulse(pb_debounced, clk, pb_one_pulse);
     end
 endmodule
 
-//module Clock_Divider(rst_n, clk, divided_clk, digit_clk);
-//    input clk, rst_n;
-//    output divided_clk, digit_clk;
-//    reg tmp, tmp_1;
-//    reg [23:0]cnt;
-//    reg [15:0]cnt_1;
-//    reg divided_clk, digit_clk;
-
-//    always@(posedge clk)begin
-//        if(rst_n) begin
-//            cnt <= 24'b1;
-//            cnt_1 <= 16'b0;
-//        end
-//        else begin
-//            cnt <= cnt+1'b1;
-//            cnt_1 <= cnt_1+1'b1;
-//        end
-//    end
-//    always@(posedge clk)begin
-//        if(rst_n)begin
-//            divided_clk <= 1'b0;
-//            digit_clk <= 1'b0;
-//        end
-//        else begin
-//            if(cnt == 2**24)begin
-//                divided_clk <= 1'b1;
-//            end
-//            else divided_clk <= 1'b0;
-//            if(cnt_1 == 2**15)begin
-//                digit_clk <= 1'b1;
-//            end
-//            else digit_clk <= 1'b0;
-//        end
-//        // if(cnt == 2**24 - 1'b1)begin
-//        //     cnt <= 24'b0;
-//        //     next_digit_clk <= 1'b1;
-//        // end
-//        // else begin
-//        //     next_divided_clk = 1'b0;
-//        //     cnt <= cnt+1;
-//        // end
-
-//        // if(cnt_1 == 2**15 - 1'b1)begin
-//        //     cnt_1 <= 16'b0;
-//        //     next_digit_clk <= 1'b1;
-//        // end
-//        // else begin
-//        //     next_digit_clk <= 1'b0;
-//        //     cnt_1 <= cnt_1+1'b1;
-//        // end
-//    end
-//endmodule
-module Clock_Divider(clk, divided_clk, digit_clk);
-    input clk;
+module Clock_Divider(rst_n, clk, divided_clk, digit_clk);
+    input clk, rst_n;
     output divided_clk, digit_clk;
-    reg [23:0]cnt = 24'b0;
-    reg [19:0]cnt_1 = 20'b0;
+    reg [24:0]cnt;
+    reg [19:0]cnt_1;
     reg divided_clk, digit_clk;
 
     always@(posedge clk)begin
-        if(cnt == 2**24 - 1'b1)begin
-            cnt <= 24'b0;
-            divided_clk <= 1'b1;
-        end
-        else begin
-            divided_clk <= 1'b0;
-            cnt <= cnt+1'b1;
-        end
-        
-        if(cnt_1 == 2**15 - 1'b1)begin
+        if(!rst_n) begin
+            cnt <= 25'b0;
             cnt_1 <= 20'b0;
-            digit_clk <= 1'b1;
         end
         else begin
-            digit_clk <= 1'b0;
-            cnt_1 <= cnt_1+1'b1;
+            if(cnt == 2**25 - 1'b1)begin
+                cnt <= 25'b0;
+                divided_clk <= 1'b1;
+            end
+            else begin
+                divided_clk <= 1'b0;
+                cnt <= cnt+1'b1;
+            end
+            
+            if(cnt_1 == 2**15 - 1'b1)begin
+                cnt_1 <= 20'b0;
+                digit_clk <= 1'b1;
+            end
+            else begin
+                digit_clk <= 1'b0;
+                cnt_1 <= cnt_1+1'b1;
+            end
         end
     end
 endmodule
