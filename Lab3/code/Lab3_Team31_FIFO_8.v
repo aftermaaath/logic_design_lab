@@ -38,6 +38,9 @@ always@(posedge clk)begin
                 error <= 1'b0;
             end
         end
+        else begin
+            error <= 1'b0;
+        end
     end
 end
 
