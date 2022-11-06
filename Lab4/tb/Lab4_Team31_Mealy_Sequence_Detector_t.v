@@ -5,7 +5,7 @@ reg clk = 1'b1;
 reg rst_n = 1'b0;
 reg in = 1'b0;
 wire dec;
-// wire [2:0]state_0, state_1, state_2;
+//wire [4:0]state;
 
 // specify duration of a clock cycle.
 parameter cyc = 10;
@@ -18,7 +18,7 @@ Mealy_Sequence_Detector msc (
     .rst_n (rst_n),
     .in (in),
     .dec (dec)
-    // .state_0(state_0), .state_1(state_1), .state_2(state_2)
+//    .state(state)
 );
 
 // uncommment and add "+access+r" to your nverilog command to dump fsdb waveform on NTHUCAD
