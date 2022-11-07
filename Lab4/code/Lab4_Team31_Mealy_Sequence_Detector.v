@@ -1,13 +1,12 @@
 `timescale 1ns/1ps
 
-module Mealy_Sequence_Detector (clk, rst_n, in, dec);
+module Mealy_Sequence_Detector (clk, rst_n, in, dec, state);
 input clk, rst_n;
 input in;
 output dec;
-// output [4:0]state;
+ output [4:0]state;
 
 reg dec;
-reg [2:0]tmp_dec;
 reg [4:0]state;
 reg [4:0]nxt_state;
 parameter S0 = 4'd0;
