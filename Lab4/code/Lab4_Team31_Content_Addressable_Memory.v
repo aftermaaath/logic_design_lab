@@ -14,10 +14,12 @@ wire [3:0]nxt_out[16:0];
 assign nxt_out[0] = nxt_out_reg;
 wire [16:0]nxt_hit;
 assign nxt_hit[0] = nxt_hit_reg;
-reg [7:0]nxt_din;
-
+wire [7:0]nxt_din;
+assign nxt_din = (wen & !ren) ? din : CAM[addr];
 always @(posedge clk) begin
     CAM[addr] <= nxt_din;
+    nxt_hit_reg <= 1'b0;
+    nxt_out_reg <= 4'b0;
     if(ren == 1'b1)begin
         hit <= nxt_hit[16];
         dout <= nxt_out[16];
@@ -28,11 +30,6 @@ always @(posedge clk) begin
     end
 end
 
-always@(*)begin
-    nxt_din = (wen & !ren) ? din : CAM[addr];
-    nxt_hit_reg = 1'b0;
-    nxt_out_reg = 4'b0;
-end
 for_loop f0(5'd0, nxt_hit[0], nxt_out[0], nxt_hit[1], nxt_out[1], din, CAM[0]);
 for_loop f1(5'd1, nxt_hit[1], nxt_out[1], nxt_hit[2], nxt_out[2], din, CAM[1]);
 for_loop f2(5'd2, nxt_hit[2], nxt_out[2], nxt_hit[3], nxt_out[3], din, CAM[2]);
