@@ -68,6 +68,7 @@ FIFO_8 f4(clk, rst_n, wen[3], ren[3], d, out[3], err[3]);
 always@(posedge clk)begin
     if(rst_n == 1'b0) begin
         ct <= 2'b0;
+        rw <= 1'b0;
     end
     else begin
         ct <= ct + 1'b1;
