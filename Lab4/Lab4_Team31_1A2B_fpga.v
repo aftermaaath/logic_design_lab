@@ -21,6 +21,7 @@ parameter alp_a = 7'b0001000;
 parameter alp_b = 7'b1100000;
 
 reg [6:0] next_seg, seg3, seg2, seg1, seg0; // 7-segment display
+//reg [6:0] pre_seg3, pre_seg2, pre_seg1, pre_seg0; // previous phase seg value
 wire [15:0] guess; // answer guessed by player
 wire [15:0] cur_ans; // hold value for answer
 wire [3:0] res_a, res_b; // 'A' and 'B' for 1A2B game
@@ -39,17 +40,18 @@ wire wflicker; // wire for flicker
 reg [1:0] ct;
 wire [1:0] next_ct;
 reg [2:0] phase, next_phase;
-wire [2:0] cur_phase;
+wire [2:0] cur_phase, wnext_phase;
 
 assign next_ct = ct + 1'b1;
 assign rst = ~rst_op;
 assign wflicker = flicker;
 assign cur_ans = ans;
 assign cur_phase = phase;
+assign wnext_phase = next_phase;
 assign hd_seg3 = seg3;
 assign hd_seg2 = seg2;
 assign hd_seg1 = seg1;
-assign hd_seg0 = seg_cur;
+assign hd_seg0 = seg0;
 
 debounce db1(start_db, start_btn, clk);
 debounce db2(rst_db, rst_btn, clk);
@@ -61,13 +63,14 @@ onepulse op3(enter_op, enter_db, clk);
 Clock_Divider cd(clk, div_clk, fli_clk);
 input_to_seg itos(num, seg_cur); // turn input num(input by switches) into seg
 seg_to_input stoi(guess, hd_seg3, hd_seg2, hd_seg1, hd_seg0); // turn 4-digit seg into 16 bits number
-ans_check ac(res_a, res_b, ans, guess); //  verify answer
+ans_check ac(res_a, res_b, ans, guess);
 input_to_seg intosa(res_a, seg_a); // turn value of 'A' into seg
 input_to_seg intosb(res_b, seg_b); // turn value of 'B' into seg
-LFSR lfsr(clk, rst, gen_out); // generate answer
+// generate answer
+LFSR lfsr(clk, rst, gen_out);
 
 always@(posedge clk) begin
-    if(fli_clk) flicker <= ~wflicker;
+    if(fli_clk) flicker <= ~flicker;
     else flicker <= wflicker; 
 end
 
@@ -157,6 +160,7 @@ always@(*)begin
     endcase
 end
 
+// 'output' for state: next_phase, seg0
 always@(*)begin
     case(phase)
         3'd0: begin
@@ -244,7 +248,7 @@ assign dg1 = out[7:4] % 10;
 assign dg0 = out[3:0] % 10;
 assign valid_out = {vdg3, vdg2, vdg1, vdg0};
 
-// dff generate
+// sdff generate
 wire [15:0] next_out;
 wire gen_out0;
 xnor(gen_out0, out[3], out[12], out[14], out[15]);
@@ -374,6 +378,7 @@ always@(*)begin
         default: num = 4'd0;
     endcase
 end
+
 
 endmodule
 

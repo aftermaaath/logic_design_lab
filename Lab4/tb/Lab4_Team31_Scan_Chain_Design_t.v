@@ -27,6 +27,17 @@ initial begin
     #10 scan_en = 1'b1;
     #80 scan_en = 1'b0;
     
+    repeat (4) begin
+        #10 scan_en = 1'b1;
+        scan_in = scan_in + 1'b1;
+        repeat (8) begin
+            #10 scan_in = $random;
+        end
+        scan_en = 1'b0;
+        #10 scan_en = 1'b1;
+        #80 scan_en = 1'b0;
+    end
+    
     #10 scan_en = 1'b1;
     scan_in = scan_in + 1'b1;
     repeat (8) begin

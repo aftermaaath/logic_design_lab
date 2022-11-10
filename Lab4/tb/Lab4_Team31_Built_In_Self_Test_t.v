@@ -7,9 +7,6 @@ reg scan_en = 1'b0;
 wire scan_in;
 wire scan_out;
 
-
-
-
 parameter cyc = 10;
 
 always#(cyc/2)clk = !clk;
@@ -21,21 +18,12 @@ initial begin
 	rst_n = 1'b1;
 	#3
 	scan_en = 1'b1;
-	#82
-	scan_en = 1'b0;
-	#5
-	scan_en = 1'b1;
-	
-
-	
-	
-
-    
-
-
+	repeat(8)begin
+	   #80 scan_en = 1'b0;
+	   #10 scan_en = 1'b1;
+	end
+	#80 $finish;
 end
-
-
 endmodule
 
 //module Built_In_Self_Test_t();

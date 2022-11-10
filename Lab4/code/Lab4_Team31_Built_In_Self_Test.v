@@ -41,9 +41,9 @@ always@(posedge clk)begin
     end
 end
 
-always@(negedge clk)begin
-    $display("a: %d, b: %d, p: %d, sdff: %b", sdff[7:4], sdff[3:0], p, sdff);
-end
+//always@(negedge clk)begin
+//    $display("a: %d, b: %d, p: %d, sdff: %b", sdff[7:4], sdff[3:0], p, sdff);
+//end
 
 endmodule
 
