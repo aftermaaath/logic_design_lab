@@ -203,26 +203,9 @@ reg [7:0]nxt_st;
 reg[3:0]drinks;
 wire [6:0]dol;
 parameter S0 = 8'd0;
-parameter S1 = 8'd5;
-parameter S2 = 8'd10;
-parameter S3 = 8'd15;
-parameter S4 = 8'd20;
-parameter S5 = 8'd25;
-parameter S6 = 8'd30;
-parameter S7 = 8'd35;
-parameter S8 = 8'd40;
-parameter S9 = 8'd45;
-parameter S10 = 8'd50;
-parameter S11 = 8'd55;
-parameter S12 = 8'd60;
-parameter S13 = 8'd65;
-parameter S14 = 8'd70;
-parameter S15 = 8'd75;
-parameter S16 = 8'd80;
-parameter S17 = 8'd85;
-parameter S18 = 8'd90;
-parameter S19 = 8'd95;
-parameter S20 = 8'd100;
+parameter S1 = 8'd20;
+parameter S2 = 8'd25;
+parameter S3 = 8'd30;
 assign dol = (in == 3'b001 ? 7'd50 : ((in == 3'b010) ? 7'd10 : ((in == 3'b100) ? 7'd5 : 7'd0)));
 always@(posedge clk)begin
     if(rst_n) begin
@@ -236,142 +219,42 @@ always@(posedge clk)begin
 end
 
 always@(*)begin
-    if(!b && !cancel)begin
+    if(!b && !cancel)begin // insert money
         case(st)
         S0:begin
-            if(in == 3'b100) nxt_st = S1; // 5
-            else if(in == 3'b010) nxt_st = S2; // 10            
-            else if(in == 3'b001) nxt_st = S10; // 50            
-            else nxt_st = S0; // invalid insert
+            if(money+dol>=8'd20)begin
+                nxt_st = S1;
+                drinks = 4'b0001;
+            end else begin
+                nxt_st = S0;
+                drinks = 4'b0000;
+            end
         end
         S1:begin
-            if(in == 3'b100) nxt_st = S2;
-            else if(in == 3'b010) nxt_st = S3;
-            else if(in == 3'b001) nxt_st = S11;
-            else nxt_st = S1;
+            if(money+dol>=8'd25)begin
+                nxt_st = S2;
+                drinks = 4'b0011;
+            end else begin
+                nxt_st = S1;
+                drinks = 4'b0001;
+            end
         end
         S2:begin
-            if(in == 3'b100) nxt_st = S3;
-            else if(in == 3'b010) nxt_st = S4;
-            else if(in == 3'b001) nxt_st = S12;
-            else nxt_st = S2;
+            if(money+dol>=8'd30)begin
+                nxt_st = S3;
+                drinks = 4'b0111;
+            end else begin
+                nxt_st = S2;
+                drinks = 4'b0011;
+            end
         end
         S3:begin
-            if(in == 3'b100) nxt_st = S4;
-            else if(in == 3'b010) nxt_st = S5;
-            else if(in == 3'b001) nxt_st = S13;
-            else nxt_st = S3;
-        end
-        S4:begin
-            if(in == 3'b100) nxt_st = S5;
-            else if(in == 3'b010) nxt_st = S6;
-            else if(in == 3'b001) nxt_st = S14;
-            else nxt_st = S4;
-        end
-        S5:begin
-            if(in == 3'b100) nxt_st = S6;
-            else if(in == 3'b010) nxt_st = S7;
-            else if(in == 3'b001) nxt_st = S15;
-            else nxt_st = S5;
-        end
-        S6:begin
-            if(in == 3'b100) nxt_st = S7;
-            else if(in == 3'b010) nxt_st = S8;
-            else if(in == 3'b001) nxt_st = S16;
-            else nxt_st = S6;
-        end
-        S7:begin
-            if(in == 3'b100) nxt_st = S8;
-            else if(in == 3'b010) nxt_st = S9;
-            else if(in == 3'b001) nxt_st = S17;
-            else nxt_st = S7;
-        end
-        S8:begin
-            if(in == 3'b100) nxt_st = S9;
-            else if(in == 3'b010) nxt_st = S10;
-            else if(in == 3'b001) nxt_st = S18;
-            else nxt_st = S8;
-        end
-        S9:begin
-            if(in == 3'b100) nxt_st = S10;
-            else if(in == 3'b010) nxt_st = S11;
-            else if(in == 3'b001) nxt_st = S19;
-            else nxt_st = S9;
-        end
-        S10:begin
-            if(in == 3'b100) nxt_st = S11;
-            else if(in == 3'b010) nxt_st = S12;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S10;
-        end
-        S11:begin
-            if(in == 3'b100) nxt_st = S12;
-            else if(in == 3'b010) nxt_st = S13;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S11;
-        end
-        S12:begin
-            if(in == 3'b100) nxt_st = S13;
-            else if(in == 3'b010) nxt_st = S14;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S12;
-        end
-        S13:begin
-            if(in == 3'b100) nxt_st = S14;
-            else if(in == 3'b010) nxt_st = S15;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S13;
-        end
-        S14:begin
-            if(in == 3'b100) nxt_st = S15;
-            else if(in == 3'b010) nxt_st = S16;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S14;
-        end
-        S15:begin
-            if(in == 3'b100) nxt_st = S16;
-            else if(in == 3'b010) nxt_st = S17;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S15;
-        end
-        S16:begin
-            if(in == 3'b100) nxt_st = S17;
-            else if(in == 3'b010) nxt_st = S18;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S16;
-        end
-        S17:begin
-            if(in == 3'b100) nxt_st = S18;
-            else if(in == 3'b010) nxt_st = S19;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S17;
-        end
-        S18:begin
-            if(in == 3'b100) nxt_st = S19;
-            else if(in == 3'b010) nxt_st = S20;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S18;
-        end
-        S19:begin
-            if(in == 3'b100) nxt_st = S20;
-            else if(in == 3'b010) nxt_st = S20;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S19;
-        end
-        default:begin
-            if(in == 3'b100) nxt_st = S20;
-            else if(in == 3'b010) nxt_st = S20;
-            else if(in == 3'b001) nxt_st = S20;
-            else nxt_st = S20;
+            nxt_st = S3;
+            if(money+dol>=8'd80) drinks = 4'b1111;
+            else drinks = 4'b0111;
         end
         endcase
-        nxt_money = st+dol<8'd100 ? st+dol : 8'd100;
-        // available drinks
-        if(st+dol >= 8'd80) drinks = 4'b1111;
-        else if(st+dol >= 8'd30) drinks = 4'b0111;
-        else if(st+dol >= 8'd25) drinks = 4'b0011;
-        else if(st+dol >= 8'd20) drinks = 4'b0001;
-        else drinks = 4'b0;
+        nxt_money = money+dol<8'd100 ? money+dol : 8'd100;
     end
     else begin // bought
         nxt_st = S0;
