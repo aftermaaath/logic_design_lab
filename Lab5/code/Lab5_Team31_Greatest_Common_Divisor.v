@@ -7,6 +7,7 @@ input [15:0] a;
 input [15:0] b;
 output reg done;
 output reg [15:0] gcd;
+//output [1:0] state;
 
 reg [1:0] state, next_state;
 reg [15:0] cha, chb, ans;
