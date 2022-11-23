@@ -55,7 +55,7 @@ always@(*)begin
             end
             else begin
                 next_state = CAL;
-                p = 8'b0;
+                p = 10'b0;
                 ans = exb << 2;
                 A = exa << 5;
                 S = (-exa) << 5;
@@ -65,12 +65,24 @@ always@(*)begin
         CAL: begin           
             next_state = lct == 2'b11 ? FIN : CAL;
             ct = lct + 1'b1;
-            p = 8'b0;
-            A = lA;
-            S = lS;
-            if(rsans[1:0] == 2'b01) ans = rsans + lA;
-            else if(rsans[1:0] == 2'b10) ans = rsans + lS;
-            else ans = rsans;
+            if(rsans[1:0] == 2'b01) begin
+                p = 8'b0;
+                ans = rsans + lA;
+                A = lA;
+                S = lS;
+            end
+            else if(rsans[1:0] == 2'b10) begin
+                p = 8'b0;
+                ans = rsans + lS;
+                A = lA;
+                S = lS;
+            end
+            else begin
+                p = 8'b0;
+                ans = rsans;
+                A = lA;
+                S = lS;
+            end
         end
         FIN: begin
             next_state = FIN2;
