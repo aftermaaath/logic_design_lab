@@ -6,8 +6,8 @@ reg rst_n = 1'b0;
 reg in = 1'b0;
 wire dec;
 // reg [3:0]tmp;
-wire [3:0]state;
-wire [3:0]nxt_st;
+// wire [3:0]state;
+// wire [3:0]nxt_st;
 
 // specify duration of a clock cycle.
 parameter cyc = 10;
@@ -19,9 +19,7 @@ Sliding_Window_Sequence_Detector swsd (
     .clk (clk),
     .rst_n (rst_n),
     .in (in),
-    .dec (dec),
-    .st(state),
-    .nxt_st(nxt_st)
+    .dec (dec)
 );
 initial begin
     @(negedge clk) rst_n = 1'b1;
