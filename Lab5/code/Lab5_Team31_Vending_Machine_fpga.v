@@ -112,6 +112,7 @@ always@(*)begin
         default: seg = 7'b1111111; // show nothing
     endcase
 end
+
 always@(posedge clk)begin
     if(rst_n || money == 7'b0) begin
         b_drink <= 4'b0;
@@ -248,7 +249,7 @@ always@(*)begin
                 drinks = 4'b0011;
             end
         end
-        S3:begin
+        default:begin
             nxt_st = S3;
             if(money+dol>=8'd80) drinks = 4'b1111;
             else drinks = 4'b0111;

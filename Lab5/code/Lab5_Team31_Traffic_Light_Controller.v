@@ -99,7 +99,7 @@ always@(*)begin
             st_change = 1'b0;
         end
     end
-    S5:begin
+    default:begin
         nxt_st = S0;
         nxt_hw = Green;
         nxt_lr = Red;

@@ -58,7 +58,7 @@ always@(*)begin
         else nxt_st = S5;
         dec = 1'b0;
     end
-    S7:begin
+    default:begin
         if(in == 1'b1)begin
             nxt_st = S3;  
             dec = 1'b1;                      
