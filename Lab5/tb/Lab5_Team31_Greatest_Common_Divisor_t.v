@@ -7,7 +7,7 @@ reg [15:0] a = 16'b0;
 reg [15:0] b = 16'b0;
 wire done;
 wire [15:0] gcd;
-//wire [1:0] state;
+// wire [1:0] state;
 
 Greatest_Common_Divisor GCD(
     .clk(clk),
@@ -17,7 +17,7 @@ Greatest_Common_Divisor GCD(
     .b(b),
     .done(done),
     .gcd(gcd)
-//    .state(state)
+    // .state(state)
 );
 
 always #5 clk = ~clk;
