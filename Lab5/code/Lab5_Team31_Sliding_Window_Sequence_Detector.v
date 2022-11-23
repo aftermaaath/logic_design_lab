@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
-module Sliding_Window_Sequence_Detector (clk, rst_n, in, dec, st, nxt_st);
+module Sliding_Window_Sequence_Detector (clk, rst_n, in, dec);
 input clk, rst_n;
 input in;
 output dec;
-output [3:0]st;
-output [3:0]nxt_st;
+// output [3:0]st;
+// output [3:0]nxt_st;
 reg [3:0]st;
 reg [3:0]nxt_st;
 reg dec;

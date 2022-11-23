@@ -6,7 +6,7 @@ reg rst_n = 1'b1;
 reg lr_has_car = 1'b0;
 wire [2:0] hw_light;
 wire [2:0] lr_light;
-wire [2:0]st;
+// wire [2:0]st;
 parameter cyc = 10;
 
 always #(cyc/2) clk = ~clk;
@@ -16,8 +16,7 @@ Traffic_Light_Controller tlc (
     .rst_n (rst_n),
     .lr_has_car (lr_has_car),
     .hw_light (hw_light),
-    .lr_light(lr_light),
-    .st(st)
+    .lr_light(lr_light)
 );
 initial begin
     @(negedge clk) rst_n = 1'b0;

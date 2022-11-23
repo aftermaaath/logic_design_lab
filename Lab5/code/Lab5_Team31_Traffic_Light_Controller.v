@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
-module Traffic_Light_Controller (clk, rst_n, lr_has_car, hw_light, lr_light, st);
+module Traffic_Light_Controller (clk, rst_n, lr_has_car, hw_light, lr_light);
 input clk, rst_n;
 input lr_has_car;
 output [2:0] hw_light;
 output [2:0] lr_light;
-output [2:0] st;
+// output [2:0] st;
 reg [2:0]st;
 reg [2:0]nxt_st;
 wire [6:0]cyc;
