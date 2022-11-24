@@ -35,7 +35,7 @@ output wire pmod_2;
 output wire pmod_4;
 
 parameter BEAT_FREQ_0 = 32'd1;	//one beat=1sec
-parameter BEAT_FREQ_1 = 32'd4;	//one beat=0.5sec
+parameter BEAT_FREQ_1 = 32'd2;	//one beat=0.5sec
 parameter DUTY_BEST = 10'd512;    //duty cycle=50%
 
 wire [31:0] freq;
@@ -88,9 +88,6 @@ parameter [8:0] KEY_CODES_s = 9'h1b;
 parameter [8:0] KEY_CODES_r = 9'h2d;
 parameter [8:0] KEY_CODES_enter = 9'h5a;
 
-reg [9:0] last_key;
-
-wire shift_down;
 wire [511:0] key_down;
 wire [8:0] last_change;
 wire been_ready;
