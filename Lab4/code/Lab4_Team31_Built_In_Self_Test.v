@@ -10,7 +10,7 @@ wire [7:0] next_out;
 assign next_out = {out[6:0], (out[1] ^ out[2]) ^ (out[3] ^ out[7])};
 assign out_msb = out[7];
 
-always@(negedge clk) begin
+always@(posedge clk) begin
     if(rst_n == 1'b0) out <= 8'b10111101;
     else out <= next_out;
 end
