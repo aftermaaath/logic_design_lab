@@ -16,7 +16,7 @@ Built_In_Self_Test BIST(clk, rst_n, scan_en, scan_in, scan_out);
 initial begin
     #12 
 	rst_n = 1'b1;
-	#3
+	#6
 	scan_en = 1'b1;
 	repeat(8)begin
 	   #80 scan_en = 1'b0;
