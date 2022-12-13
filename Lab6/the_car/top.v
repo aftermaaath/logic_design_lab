@@ -11,12 +11,17 @@ module Top(
     output right_motor, //  K2
     output reg [1:0]right, //  B16 B15
     output wire test_led, // U18
-    input test // V17
+    input test, // V17
+    output wire lsig_led, // V19
+    output wire rsig_led, // E19
+    output wire msig_led, // U19
+    output wire stop_led, // L1
+    input stop_sw, // R2
+    output reg [6:0] state_7seg, // 7seg
+    output wire [3:0] an
 );
     
-    assign test_led = test;
-    
-    wire Rst_n, rst_pb, stop;
+    wire Rst_n, rst_pb, stop, stop_ctrl;
     debounce d0(rst_pb, rst, clk);
     onepulse d1(rst_pb, clk, Rst_n);
     
@@ -25,6 +30,25 @@ module Top(
     
     assign left_motor = pwm[1];
     assign right_motor = pwm[0];
+    
+    assign test_led = test;
+    assign lsig_led = left_signal;
+    assign msig_led = mid_signal;
+    assign rsig_led = right_signal;
+    assign stop_led = stop;
+    assign stop_ctrl = stop & stop_sw;
+    assign an = 4'b0001;
+    
+    always @ (*) begin
+    	case (state)
+    		3'd0 : state_7seg = 7'b1000000;	//0000
+			3'd1 : state_7seg = 7'b1111001;   //0001
+			3'd2 : state_7seg = 7'b0100100;   //0010
+			3'd3 : state_7seg = 7'b0110000;   //0011
+			3'd4 : state_7seg = 7'b0011001;   //0100
+			default : state_7seg = 7'b1111111;
+    	endcase
+    end
     
     motor A(
         .clk(clk),
@@ -49,19 +73,22 @@ module Top(
         .mid_signal(mid_signal), 
         .state(state)
        );
-
+    parameter turn_left = 3'd0;
+    parameter turn_right = 3'd1;
+    parameter go_stright = 3'd2;
+    parameter sharp_turn_left = 3'd3;
+    parameter sharp_turn_right = 3'd4;
     always @(*) begin
         // [TO-DO] Use left and right to set your pwm
         //if(stop) {left, right} = ???;
         //else  {left, right} = ???;
-        if(stop) begin
-            left <= 2'b0;
-            right <= 2'b0;
+        if(stop_ctrl) begin
+            left = 2'b11;
+            right = 2'b11;
         end
-        else begin
-            left <= 2'b10;
-            right <= 2'b10;
-        end
+        else if(state == sharp_turn_left) {left, right} = 4'b0110;
+        else if(state == sharp_turn_right) {left, right} = 4'b1001;
+        else {left, right} = 4'b1010;
     end
 
 endmodule

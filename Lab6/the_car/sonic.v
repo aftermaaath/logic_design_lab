@@ -16,7 +16,7 @@ module sonic_top(clk, rst, Echo, Trig, stop);
     // Hint: using "dis"
     always@(posedge clk) begin
         if(rst) stop <= 1'b0;
-        else if(dis <= 20'd40000) stop <= 1'b1;
+        else if(dis <= 20'd4000) stop <= 1'b1;
         else stop <= 1'b0;
     end
  

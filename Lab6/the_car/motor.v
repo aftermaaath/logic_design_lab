@@ -14,6 +14,12 @@ module motor(
     parameter go_stright = 3'd2;
     parameter sharp_turn_left = 3'd3;
     parameter sharp_turn_right = 3'd4;
+    
+    parameter straight_speed = 10'd1000;
+    parameter turn_in = 10'd800;
+    parameter turn_out = 10'd1000;
+    parameter sharp_turn_in = 10'd1000;
+    parameter sharp_turn_out = 10'd1000;
 
     motor_pwm m0(clk, rst, left_motor, left_pwm);
     motor_pwm m1(clk, rst, right_motor, right_pwm);
@@ -33,24 +39,24 @@ module motor(
         case(mode)
         // speed max 1023
         turn_left:begin // left < right
-            next_left_motor = 10'd400;
-            next_right_motor = 10'd600;
+            next_left_motor = turn_in;
+            next_right_motor = turn_out;
         end
         turn_right:begin // right < left
-            next_left_motor = 10'd600;
-            next_right_motor = 10'd400;
+            next_left_motor = turn_out;
+            next_right_motor = turn_in;
         end
         sharp_turn_left:begin // left << right
-            next_left_motor = 10'd300;
-            next_right_motor = 10'd700;
+            next_left_motor = sharp_turn_in;
+            next_right_motor = sharp_turn_out;
         end
         sharp_turn_right:begin // right << left
-            next_left_motor = 10'd700;
-            next_right_motor = 10'd300;
+            next_left_motor = sharp_turn_out;
+            next_right_motor = sharp_turn_in;
         end
         default:begin // same speed
-            next_left_motor = 10'd750;
-            next_right_motor = 10'd750;
+            next_left_motor = straight_speed;
+            next_right_motor = straight_speed;
         end
         endcase
     end
