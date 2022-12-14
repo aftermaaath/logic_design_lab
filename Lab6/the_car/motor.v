@@ -16,12 +16,12 @@ module motor(
     parameter sharp_turn_right = 3'd4;
     parameter back = 3'd5;
     
-    parameter straight_speed = 10'd1000;
-    parameter turn_in = 10'd1000;
-    parameter turn_out = 10'd1000;
-    parameter sharp_turn_in = 10'd1000;
-    parameter sharp_turn_out = 10'd1000;
-    parameter back_speed = 10'd700;
+    parameter straight_speed = 10'd1023;
+    parameter turn_in = 10'd1023;
+    parameter turn_out = 10'd1023;
+    parameter sharp_turn_in = 10'd1023;
+    parameter sharp_turn_out = 10'd1023;
+//    parameter back_speed = 10'd900;
 
 
     motor_pwm m0(clk, rst, left_motor, left_pwm);
@@ -61,10 +61,10 @@ module motor(
             next_left_motor = straight_speed;
             next_right_motor = straight_speed;
         end
-        back:begin
-            next_left_motor = back_speed;
-            next_right_motor = back_speed;
-        end
+//        back:begin
+//            next_left_motor = back_speed;
+//            next_right_motor = back_speed;
+//        end
         default:begin
             next_left_motor = straight_speed;
             next_right_motor = straight_speed;

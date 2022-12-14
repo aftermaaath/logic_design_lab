@@ -12,13 +12,14 @@ module Top(
     output reg [1:0]right, //  B16 B15
     output wire test_led, // U18
     input test, // V17
-    output wire lsig_led, // V19
-    output wire rsig_led, // E19
+    output wire lsig_led, // E19
+    output wire rsig_led, // V19
     output wire msig_led, // U19
     output wire stop_led, // L1
     input stop_sw, // R2
     output reg [6:0] state_7seg, // 7seg
-    output wire [3:0] an
+    output wire [3:0] an,
+    output reg [3:0] test_motor // 
 );
     
     wire Rst_n, rst_pb, stop, stop_ctrl;
@@ -37,7 +38,7 @@ module Top(
     assign rsig_led = right_signal;
     assign stop_led = stop;
     assign stop_ctrl = stop & stop_sw;
-    assign an = 4'b0001;
+    assign an = 4'b1110;
     
     always @ (*) begin
     	case (state)
@@ -81,7 +82,6 @@ module Top(
     parameter sharp_turn_left = 3'd3;
     parameter sharp_turn_right = 3'd4;
     parameter back = 3'd5;
-
     always @(*) begin
         // [TO-DO] Use left and right to set your pwm
         //if(stop) {left, right} = ???;
@@ -93,16 +93,39 @@ module Top(
         // else if(state == sharp_turn_left) {left, right} = 4'b0110;
         // else if(state == sharp_turn_right) {left, right} = 4'b1001;
         // else {left, right} = 4'b1010;
-        if(stop_ctrl) {left, right} = 4'b1111;
+        if(stop_ctrl) begin
+            {left, right} = 4'b1111;
+        end
         else begin
             case(state)
-                go_straight: {left, right} = 4'b1010;
-                turn_left: {left, right} = 4'b1110;
-                turn_right: {left, right} = 4'b1011;
-                sharp_turn_left: {left, right} = 4'b0110;
-                sharp_turn_right: {left, right} = 4'b1001;
-                back: {left, right} = 4'b0101;
-                default: {left, right} = 4'b1010;
+                go_straight:begin
+                {left, right} = 4'b1010;
+                test_motor = 4'b1010;
+                end
+                turn_left: begin
+                {left, right} = 4'b1110;
+                test_motor = 4'b1110;
+                end
+                turn_right:begin
+                {left, right} = 4'b1011;
+                test_motor = 4'b1011;
+                end
+                sharp_turn_left: begin
+                {left, right} = 4'b0110;
+                test_motor = 4'b0110;
+                end
+                sharp_turn_right:begin
+                {left, right} = 4'b1001;
+                test_motor = 4'b1001;
+                end
+//                back:begin
+//                {left, right} = 4'b0101;
+//                test_motor = 4'b0101;
+//                end
+                default: begin
+                {left, right} = 4'b1010;
+                test_motor = 4'b1010;
+                end
             endcase
         end
     end
