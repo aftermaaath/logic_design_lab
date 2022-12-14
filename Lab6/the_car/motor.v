@@ -17,7 +17,7 @@ module motor(
     parameter back = 3'd5;
     
     parameter straight_speed = 10'd1023;
-    parameter turn_in = 10'd1023;
+    parameter turn_in = 10'd823;
     parameter turn_out = 10'd1023;
     parameter sharp_turn_in = 10'd1023;
     parameter sharp_turn_out = 10'd1023;

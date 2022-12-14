@@ -103,12 +103,12 @@ module Top(
                 test_motor = 4'b1010;
                 end
                 turn_left: begin
-                {left, right} = 4'b1110;
-                test_motor = 4'b1110;
+                {left, right} = 4'b1010;
+                test_motor = 4'b1010;
                 end
                 turn_right:begin
-                {left, right} = 4'b1011;
-                test_motor = 4'b1011;
+                {left, right} = 4'b1010;
+                test_motor = 4'b1010;
                 end
                 sharp_turn_left: begin
                 {left, right} = 4'b0110;
