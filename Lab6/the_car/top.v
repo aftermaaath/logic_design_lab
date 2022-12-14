@@ -118,10 +118,10 @@ module Top(
                 {left, right} = 4'b1001;
                 test_motor = 4'b1001;
                 end
-//                back:begin
-//                {left, right} = 4'b0101;
-//                test_motor = 4'b0101;
-//                end
+                back:begin
+                {left, right} = 4'b0101;
+                test_motor = 4'b0101;
+                end
                 default: begin
                 {left, right} = 4'b1010;
                 test_motor = 4'b1010;

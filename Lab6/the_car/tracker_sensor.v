@@ -18,7 +18,7 @@ module tracker_sensor(clk, reset, left_signal, right_signal, mid_signal, state);
     parameter go_straight = 3'd2;
     parameter sharp_turn_left = 3'd3;
     parameter sharp_turn_right = 3'd4;
-    // parameter back = 3'd5;
+     parameter back = 3'd5;
     
     always@(posedge clk)begin
         if(reset) state <= go_straight;
@@ -39,6 +39,7 @@ module tracker_sensor(clk, reset, left_signal, right_signal, mid_signal, state);
             go_straight:begin
                 if(left_signal==1'b0 && right_signal==1'b1) next_state = turn_right;
                 else if(left_signal==1'b1 && right_signal==1'b0) next_state = turn_left;
+                else if(left_signal == 1'b0 && right_signal == 1'b0) next_state = back;
                 else next_state = go_straight;
             end
             turn_left:begin
