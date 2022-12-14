@@ -46,6 +46,7 @@ module Top(
 			3'd2 : state_7seg = 7'b0100100;   //0010
 			3'd3 : state_7seg = 7'b0110000;   //0011
 			3'd4 : state_7seg = 7'b0011001;   //0100
+            3'd5 : state_7seg = 7'b0010010; //0101
 			default : state_7seg = 7'b1111111;
     	endcase
     end
@@ -73,22 +74,37 @@ module Top(
         .mid_signal(mid_signal), 
         .state(state)
        );
+
     parameter turn_left = 3'd0;
     parameter turn_right = 3'd1;
-    parameter go_stright = 3'd2;
+    parameter go_straight = 3'd2;
     parameter sharp_turn_left = 3'd3;
     parameter sharp_turn_right = 3'd4;
+    parameter back = 3'd5;
+
     always @(*) begin
         // [TO-DO] Use left and right to set your pwm
         //if(stop) {left, right} = ???;
         //else  {left, right} = ???;
-        if(stop_ctrl) begin
-            left = 2'b11;
-            right = 2'b11;
+        // if(stop_ctrl) begin
+        //     left = 2'b11;
+        //     right = 2'b11;
+        // end
+        // else if(state == sharp_turn_left) {left, right} = 4'b0110;
+        // else if(state == sharp_turn_right) {left, right} = 4'b1001;
+        // else {left, right} = 4'b1010;
+        if(stop_ctrl) {left, right} = 4'b1111;
+        else begin
+            case(state)
+                go_straight: {left, right} = 4'b1010;
+                turn_left: {left, right} = 4'b1110;
+                turn_right: {left, right} = 4'b1011;
+                sharp_turn_left: {left, right} = 4'b0110;
+                sharp_turn_right: {left, right} = 4'b1001;
+                back: {left, right} = 4'b0101;
+                default: {left, right} = 4'b1010;
+            endcase
         end
-        else if(state == sharp_turn_left) {left, right} = 4'b0110;
-        else if(state == sharp_turn_right) {left, right} = 4'b1001;
-        else {left, right} = 4'b1010;
     end
 
 endmodule
