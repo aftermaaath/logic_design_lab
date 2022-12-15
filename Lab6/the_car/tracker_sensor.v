@@ -39,7 +39,7 @@ module tracker_sensor(clk, reset, left_signal, right_signal, mid_signal, state);
             go_straight:begin
                 if(left_signal==1'b0 && right_signal==1'b1) next_state = turn_right;
                 else if(left_signal==1'b1 && right_signal==1'b0) next_state = turn_left;
-                else if(left_signal == 1'b0 && right_signal == 1'b0) next_state = back;
+                // else if(left_signal == 1'b0 && right_signal == 1'b0) next_state = back;
                 else next_state = go_straight;
             end
             turn_left:begin
@@ -63,7 +63,7 @@ module tracker_sensor(clk, reset, left_signal, right_signal, mid_signal, state);
             sharp_turn_right:begin
                 if(mid_signal==1'b0) next_state = sharp_turn_right;
                 else next_state = turn_right;
-            end            
+            end
             default:begin
                 next_state = go_straight;
             end
