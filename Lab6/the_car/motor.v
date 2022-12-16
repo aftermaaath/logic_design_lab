@@ -61,10 +61,6 @@ module motor(
             next_left_motor = straight_speed;
             next_right_motor = 10'd1023;
         end
-        back:begin
-            next_left_motor = back_speed;
-            next_right_motor = back_speed;
-        end
         default:begin
             next_left_motor = straight_speed;
             next_right_motor = straight_speed;
