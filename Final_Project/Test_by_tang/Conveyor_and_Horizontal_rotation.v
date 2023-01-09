@@ -7,23 +7,23 @@ module Top(
     output wire pwm_head, // left_motor
     output wire pwm_con, // right_motor
     output wire head_turn, // testing
-    output wire con_turn // testing
+     output wire con_turn // testing
 );
     wire rst_op, rst_db;
     debounce d0(rst_db, rst_pb, clk);
     onepulse d1(rst_db, clk, rst_op);
     wire turn_op, turn_db;
     debounce d2(turn_db, turn_pb, clk);
-    onepulse d3(turn_db, clk, turn_op);
+    // onepulse d3(turn_db, clk, turn_op);
 
     Rotation_PWM_gen m0(clk, rst_op, pwm_head);
     Rotation_PWM_gen m1(clk, rst_op, pwm_con);
 
-    assign head_turn = turn_pb;
-    assign con_turn = rst_op;
+    assign head_turn = ((turn_db == 1'b1) ? 1'b1 : 1'b0);
+     assign con_turn = ((rst_op == 1'b1) ? 1'b1 : 1'b0);
     always@(*)begin
-        if(turn_op) {left, right} = 4'b1010;// turn
-        else {left, right} = 4'b1110;//stop
+        if(turn_db) {left, right} = 4'b1011;// turn
+        else {left, right} = 4'b1111;//stop
     end
 endmodule
 module Rotation_PWM_gen (
@@ -31,9 +31,10 @@ module Rotation_PWM_gen (
     input wire reset,
     output reg PWM
 );
-    parameter duty = 32'd300; // decide motor speed
-    wire [31:0] count_max = 32'd100_000_000 / 32'd25000;
+    parameter duty = 32'd770; // decide motor speed
+    wire [31:0] count_max = 32'd100_000_000 / 32'd65000;
     wire [31:0] count_duty = count_max * duty / 32'd1024;
+//    wire [31:0] count_duty = count_max / 2;
     reg [31:0] count;
         
     always @(posedge clk, posedge reset) begin
