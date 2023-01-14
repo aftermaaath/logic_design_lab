@@ -22,7 +22,7 @@ module shoot_top(
     debounce d3(turn_back_db, turn_back_pb, clk);
 
     Rotation_PWM_gen m0(clk, rst_op, pwm_head);
-    Rotation_PWM_gen m1(clk, rst_op, pwm_con);
+    // Rotation_PWM_gen m1(clk, rst_op, pwm_con);
     SG90 sg(
         .rst(rst_db),
         .clk(clk),
