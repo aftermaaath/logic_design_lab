@@ -31,7 +31,7 @@ reg [25:0] ct;
 always@(posedge clk)begin
     if(ct == 2 ** 26 - 1) begin
         div_clk <= 1'b1;
-        ct <= 19'b0;
+        ct <= 26'b0;
     end
     else begin
         div_clk <= 1'b0;
@@ -87,7 +87,7 @@ always@(posedge clk)begin
     else begin
         if(cnt == 2 ** 25 - 26'd800) begin
             div_clk <= 1'b1;
-            cnt <= 25'b0;
+            cnt <= 26'b0;
         end else begin
             div_clk <= 1'b0;
             cnt <= nxt_cnt;
