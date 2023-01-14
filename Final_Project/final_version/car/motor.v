@@ -44,11 +44,11 @@ end
 
 always@(*) begin
     if(speed_up) begin
-        cur_speed <= accr_spd;
-        cur_turn_speed <= accr_turn_spd;
+        cur_speed = accr_spd;
+        cur_turn_speed = accr_turn_spd;
     end else begin
-        cur_speed <= normal_spd;
-        cur_turn_speed <= turn_spd;
+        cur_speed = normal_spd;
+        cur_turn_speed = turn_spd;
     end
 end
 

@@ -10,16 +10,11 @@ parameter WAIT = 2'b00;
 parameter START = 2'b01;
 parameter REC = 2'b10;
 parameter STOP = 2'b11;
-parameter CNT_HOLD_MAX = 10'd640;
 // variables
 reg [1:0] state, next_state;
 reg [7:0] data, next_data;
 reg [4:0] count, next_count;
 reg [3:0] cnt_in, next_cnt_in;
-reg [9:0] cnt_hold, next_cnt_hold;
-reg hold_valid, next_hold_valid;
-// assign
-//assign data_rcv = data;
 
 always@(posedge clk) begin
     if(rst) begin
@@ -27,16 +22,12 @@ always@(posedge clk) begin
         data <= 8'd0;
         count <= 5'd0;
         cnt_in <= 4'd0;
-        cnt_hold <= 10'd0;
-        hold_valid <= 1'b0;
         data_rcv <= 1'b0;
     end else begin
         state <= next_state;
         data <= next_data;
         count <= next_count;
         cnt_in <= next_cnt_in;
-        cnt_hold <= next_cnt_hold;
-        hold_valid <= next_hold_valid;
         if(state == STOP) data_rcv <= data;
         else data_rcv <= data_rcv;
     end
@@ -108,26 +99,5 @@ always@(*) begin
             end
         end
     endcase
-end
-
-always@(*) begin
-    if(state == STOP) begin
-        next_cnt_hold = 10'd0;
-        next_hold_valid = 1'b1;
-    end else begin
-        if(hold_valid == 1'b1) begin
-            if(cnt_hold == CNT_HOLD_MAX) begin
-                next_cnt_hold = 10'd0;
-                next_hold_valid = 1'b0;
-            end else begin 
-                if(UART_clk == 1'b1) next_cnt_hold = cnt_hold + 10'd1;
-                else next_cnt_hold = cnt_hold;
-                next_hold_valid = 1'b1;
-            end
-        end else begin
-            next_cnt_hold = 10'd0;
-            next_hold_valid = 1'b0;
-        end
-    end
 end
 endmodule
